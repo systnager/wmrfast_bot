@@ -15,13 +15,17 @@ def main():
     root.resizable(False, False)
 
     ttk.Button(root, text=strings["start_watch_youtube"][settings["language"]],
-               width=40).grid(column=0, row=0)
+               width=40, command=start_watch_youtube()).grid(column=0, row=0)
     ttk.Button(root, text=strings["settings"][settings["language"]],
                width=40, command=open_settings).grid(column=0, row=1)
     ttk.Button(root, text=strings["exit"][settings["language"]],
                width=40, command=root.destroy).grid(column=0, row=2)
 
     root.mainloop()
+
+
+def start_watch_youtube():
+    pass
 
 
 def open_settings():
