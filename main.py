@@ -28,6 +28,10 @@ def start_watch_youtube():
     pass
 
 
+def log_in_on_wmrfast():
+    pass
+
+
 def open_settings():
     global settings
     setting_window = tkinter.Toplevel()
