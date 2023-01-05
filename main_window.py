@@ -1,4 +1,5 @@
-from tkinter import Tk, ttk
+import tkinter
+from tkinter import Tk
 from settings import Settings
 from res.string import strings
 
@@ -8,15 +9,19 @@ class MainWindow:
         self.settings = Settings()
 
         self.root = Tk()
-        self.root.geometry("250x75")
+        self.root.geometry("250x175")
         self.root.resizable(False, False)
 
-        ttk.Button(self.root, text=strings["start_watch_youtube"][self.settings.get_settings()["language"]],
-                   width=40).grid(column=0, row=0)
-        ttk.Button(self.root, text=strings["settings"][self.settings.get_settings()["language"]],
-                   width=40, command=self.settings.open_edit_settings).grid(column=0, row=1)
-        ttk.Button(self.root, text=strings["exit"][self.settings.get_settings()["language"]],
-                   width=40, command=self.destroy_window).grid(column=0, row=2)
+        self.start_watch_youtube = tkinter.Button(self.root, text=strings["start_watch_youtube"][self.settings.
+                                                  get_settings()["language"]], width=40, height=2)
+        self.exit = tkinter.Button(self.root, text=strings["exit"][self.settings
+                                   .get_settings()["language"]], width=40, height=2, command=self.destroy_window)
+        self.open_settings = tkinter.Button(self.root, text=strings["settings"][self.settings.get_settings()[
+            "language"]], width=40, height=2, command=self.settings.open_edit_settings)
+
+        self.start_watch_youtube.pack(padx=10, pady=5)
+        self.open_settings.pack(padx=10, pady=5)
+        self.exit.pack(padx=10, pady=5)
 
     def open_window(self):
         self.root.mainloop()
