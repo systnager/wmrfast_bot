@@ -1,9 +1,7 @@
-from settings import Settings
 from main_window import MainWindow
 
 
 def main():
-    settings = Settings()
     main_window = MainWindow()
     main_window.open_window()
 
