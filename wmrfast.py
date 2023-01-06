@@ -6,21 +6,26 @@ import pickle
 import time
 
 
+def _open_browser():
+    options = webdriver.FirefoxOptions()
+    options.set_preference("dom.webdriver.enabled", False)
+    options.set_preference("dom.webdriver.enabled", False)
+    options.set_preference('useAutomationExtension', False)
+    driver = webdriver.Firefox(options=options)
+
+    return driver, options
+
+
 class WMRFast:
     def __init__(self):
         self.wmrfast_url = "https://wmrfast.com"
-        self.options = webdriver.FirefoxOptions()
-        self.options.set_preference("dom.webdriver.enabled", False)
-        self.options.set_preference("dom.webdriver.enabled", False)
-        self.options.set_preference('useAutomationExtension', False)
-        self.driver = webdriver.Firefox(options=self.options)
 
     def start_watch_youtube(self):
-        self._log_in_on_wmrfast()
+        driver, options = self._log_in_on_wmrfast()
         time.sleep(3)
-        self.driver.execute_script("ajax_load('serfing_ytn')")
+        driver.execute_script("ajax_load('serfing_ytn')")
         time.sleep(5)
-        for i in self.driver.find_elements(By.CLASS_NAME, "sforms"):
+        for i in driver.find_elements(By.CLASS_NAME, "sforms"):
             try:
                 a = i.find_elements(By.CLASS_NAME, "serf_hash")[0]
                 span = i.find_elements(By.CLASS_NAME, "clickprice")[1]
@@ -31,38 +36,41 @@ class WMRFast:
                 continue
 
             try:
-                self.driver.switch_to.window(self.driver.window_handles[1])
+                driver.switch_to.window(driver.window_handles[1])
                 time.sleep(1)
-                self.driver.find_element(By.XPATH, "/html/body/table/tbody/tr/iframe").click()
+                driver.find_element(By.XPATH, "/html/body/table/tbody/tr/iframe").click()
                 time.sleep(time_sleep + 1)
-                self.driver.execute_script("check()")
+                driver.execute_script("check()")
                 time.sleep(2)
-                self.driver.close()
-                self.driver.switch_to.window(self.driver.window_handles[0])
+                driver.close()
+                driver.switch_to.window(driver.window_handles[0])
             except Exception:
-                if len(self.driver.window_handles) > 1:
-                    for handle in self.driver.window_handles[1:]:
-                        self.driver.switch_to.window(handle)
-                        self.driver.close()
-                    self.driver.switch_to.window(self.driver.window_handles[0])
+                if len(driver.window_handles) > 1:
+                    for handle in driver.window_handles[1:]:
+                        driver.switch_to.window(handle)
+                        driver.close()
+                    driver.switch_to.window(driver.window_handles[0])
 
     def _log_in_on_wmrfast(self):
-        self.driver.get(self.wmrfast_url)
+        driver, options = _open_browser()
+        driver.get(self.wmrfast_url)
         if not exists("cookies"):
             file = open("authentication_data.txt", "r")
             login, password = file.read().split(":")
             file.close()
 
-            self.driver.find_element(By.ID, "logbtn").click()
-            self.driver.find_element(By.ID, "vhusername").send_keys(login)
-            self.driver.find_element(By.ID, "vhpass").send_keys(password)
+            driver.find_element(By.ID, "logbtn").click()
+            driver.find_element(By.ID, "vhusername").send_keys(login)
+            driver.find_element(By.ID, "vhpass").send_keys(password)
 
             del login, password
-            while self.driver.current_url != "https://wmrfast.com/members.php":
+            while driver.current_url != "https://wmrfast.com/members.php":
                 time.sleep(1)
         else:
             for cookie in pickle.load(open("cookies", "rb")):
-                self.driver.add_cookie(cookie)
+                driver.add_cookie(cookie)
 
-        self.driver.get(self.wmrfast_url)
-        pickle.dump(self.driver.get_cookies(), open("cookies", "wb"))
+        driver.get(self.wmrfast_url)
+        pickle.dump(driver.get_cookies(), open("cookies", "wb"))
+
+        return driver, options
