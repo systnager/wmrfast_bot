@@ -62,14 +62,19 @@ class WMRFast:
         driver.get(self.wmrfast_url)
         if not exists("cookies"):
             file = open("authentication_data.txt", "r")
-            login, password = file.read().split(":")
+            auth_data = file.read().split(":")
             file.close()
+
+            if len(auth_data) == 2:
+                login, password = auth_data
+            else:
+                login, password = "", ""
 
             driver.find_element(By.ID, "logbtn").click()
             driver.find_element(By.ID, "vhusername").send_keys(login)
             driver.find_element(By.ID, "vhpass").send_keys(password)
 
-            del login, password
+            del auth_data, login, password
             while driver.current_url != "https://wmrfast.com/members.php":
                 time.sleep(1)
         else:
