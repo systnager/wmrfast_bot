@@ -17,6 +17,34 @@ class WMRFast:
 
     def start_watch_youtube(self):
         self._log_in_on_wmrfast()
+        time.sleep(3)
+        self.driver.execute_script("ajax_load('serfing_ytn')")
+        time.sleep(5)
+        for i in self.driver.find_elements(By.CLASS_NAME, "sforms"):
+            try:
+                a = i.find_elements(By.CLASS_NAME, "serf_hash")[0]
+                span = i.find_elements(By.CLASS_NAME, "clickprice")[1]
+                time_sleep = float(span.get_attribute('innerHTML').split()[0])
+                a.click()
+                time.sleep(3)
+            except Exception:
+                continue
+
+            try:
+                self.driver.switch_to.window(self.driver.window_handles[1])
+                time.sleep(1)
+                self.driver.find_element(By.XPATH, "/html/body/table/tbody/tr/iframe").click()
+                time.sleep(time_sleep + 1)
+                self.driver.execute_script("check()")
+                time.sleep(2)
+                self.driver.close()
+                self.driver.switch_to.window(self.driver.window_handles[0])
+            except Exception:
+                if len(self.driver.window_handles) > 1:
+                    for handle in self.driver.window_handles[1:]:
+                        self.driver.switch_to.window(handle)
+                        self.driver.close()
+                    self.driver.switch_to.window(self.driver.window_handles[0])
 
     def _log_in_on_wmrfast(self):
         self.driver.get(self.wmrfast_url)
