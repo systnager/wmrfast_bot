@@ -2,6 +2,7 @@ from selenium.webdriver.common.by import By
 from selenium import webdriver
 
 from os.path import exists
+import datetime
 import pickle
 import time
 
@@ -19,6 +20,7 @@ def _open_browser():
 class WMRFast:
     def __init__(self):
         self.wmrfast_url = "https://wmrfast.com"
+        self.total_earned_money = 0
 
     def start_watch_youtube(self):
         driver, options = self._log_in_on_wmrfast()
@@ -28,8 +30,9 @@ class WMRFast:
         for i in driver.find_elements(By.CLASS_NAME, "sforms"):
             try:
                 a = i.find_elements(By.CLASS_NAME, "serf_hash")[0]
-                span = i.find_elements(By.CLASS_NAME, "clickprice")[1]
-                time_sleep = float(span.get_attribute('innerHTML').split()[0])
+                price_span, time_span = i.find_elements(By.CLASS_NAME, "clickprice")
+                earned_money = float(price_span.get_attribute('innerHTML'))
+                time_sleep = float(time_span.get_attribute('innerHTML').split()[0])
                 a.click()
                 time.sleep(3)
             except Exception:
@@ -50,6 +53,9 @@ class WMRFast:
                         driver.switch_to.window(handle)
                         driver.close()
                     driver.switch_to.window(driver.window_handles[0])
+                continue
+            self.total_earned_money += earned_money
+            print(f"{datetime.datetime.now()} earned for session: {earned_money}, total: {self.total_earned_money}")
 
     def _log_in_on_wmrfast(self):
         driver, options = _open_browser()
