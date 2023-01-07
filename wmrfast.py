@@ -7,8 +7,9 @@ import pickle
 import time
 
 
-def _open_browser():
+def _open_browser(is_headless=False):
     options = webdriver.FirefoxOptions()
+    options.headless = is_headless
     options.set_preference("dom.webdriver.enabled", False)
     options.set_preference("dom.webdriver.enabled", False)
     options.set_preference('useAutomationExtension', False)
@@ -22,45 +23,73 @@ class WMRFast:
         self.wmrfast_url = "https://wmrfast.com"
         self.total_earned_money = 0
 
-    def start_watch_youtube(self):
-        driver, options = self._log_in_on_wmrfast()
-        time.sleep(3)
-        driver.execute_script("ajax_load('serfing_ytn')")
-        time.sleep(5)
-        for i in driver.find_elements(By.CLASS_NAME, "sforms"):
-            try:
-                a = i.find_elements(By.CLASS_NAME, "serf_hash")[0]
-                price_span, time_span = i.find_elements(By.CLASS_NAME, "clickprice")
-                earned_money = float(price_span.get_attribute('innerHTML'))
-                time_sleep = float(time_span.get_attribute('innerHTML').split()[0])
-                a.click()
-                time.sleep(3)
-            except Exception:
-                continue
 
-            try:
-                driver.switch_to.window(driver.window_handles[1])
-                time.sleep(1)
-                driver.find_element(By.XPATH, "/html/body/table/tbody/tr/iframe").click()
-                time.sleep(time_sleep + 1)
-                driver.execute_script("check()")
-                time.sleep(2)
-                driver.close()
-                driver.switch_to.window(driver.window_handles[0])
-            except Exception:
-                if len(driver.window_handles) > 1:
-                    for handle in driver.window_handles[1:]:
-                        driver.switch_to.window(handle)
-                        driver.close()
+    def start_view_website(self):
+        try:
+            driver, options = self._log_in_on_wmrfast()
+            while True:
+                driver.get("https://wmrfast.com/serfingnew.php")
+                while driver.current_url != "https://wmrfast.com/serfingnew.php":
+                    time.sleep(0.1)
+                website_list = driver.find_elements(By.CLASS_NAME, "no_active_link")
+                if len(website_list) == 0:
+                    driver.quit()
+                for i in website_list:
+                    a = i.find_elements(By.CLASS_NAME, "serf_hash")[0]
+                    price_span, time_span = i.find_elements(By.CLASS_NAME, "clickprice")
+                    earned_money = float(price_span.get_attribute('innerHTML'))
+                    time_sleep = float(time_span.get_attribute('innerHTML').split()[0])
+                    a.click()
+                    driver.switch_to.window(driver.window_handles[1])
+
+                    time.sleep(time_sleep + 3)
+                    driver.close()
                     driver.switch_to.window(driver.window_handles[0])
-                continue
-            self.total_earned_money += earned_money
-            print(f"{datetime.datetime.now()} earned for session: {earned_money}, total: {self.total_earned_money}")
+                    time.sleep(3)
+                    self.total_earned_money += earned_money
+                    print(f"{datetime.datetime.now()} earned for session: {earned_money}, total: {self.total_earned_money} in view site")
+        except:
+            driver.quit()
+
+
+    def start_watch_youtube(self):
+        try:
+            driver, options = self._log_in_on_wmrfast()
+            while True:
+                driver.get("https://wmrfast.com/serfing_ytn.php")
+                while driver.current_url != "https://wmrfast.com/serfing_ytn.php":
+                    time.sleep(0.1)
+                video_list = driver.find_elements(By.CLASS_NAME, "sforms")
+                if len(video_list) == 0:
+                    driver.quit()
+                for i in video_list:
+                        a = i.find_elements(By.CLASS_NAME, "serf_hash")[0]
+                        price_span, time_span = i.find_elements(By.CLASS_NAME, "clickprice")
+                        earned_money = float(price_span.get_attribute('innerHTML'))
+                        time_sleep = float(time_span.get_attribute('innerHTML').split()[0])
+                        a.click()
+                        while len(driver.window_handles) < 2:
+                            time.sleep(0.1)
+                        driver.switch_to.window(driver.window_handles[1])
+
+
+                        #driver.find_element(By.XPATH, "/html/body/table/tbody/tr/iframe").click()
+                        time.sleep(time_sleep + 2.5)
+                        driver.execute_script("check()")
+                        time.sleep(0.5)
+                        driver.close()
+                        driver.switch_to.window(driver.window_handles[0])
+
+                        self.total_earned_money += earned_money
+                        print(f"{datetime.datetime.now()} earned for session: {earned_money}, total: {self.total_earned_money} in youtube video")
+        except:
+            driver.quit()
 
     def _log_in_on_wmrfast(self):
-        driver, options = _open_browser()
-        driver.get(self.wmrfast_url)
         if not exists("cookies"):
+            print("Cookie not found")
+            driver, options = _open_browser()
+            driver.get(self.wmrfast_url)
             file = open("authentication_data.txt", "r")
             auth_data = file.read().split(":")
             file.close()
@@ -75,13 +104,16 @@ class WMRFast:
             driver.find_element(By.ID, "vhpass").send_keys(password)
 
             del auth_data, login, password
-            while driver.current_url != "https://wmrfast.com/members.php":
-                time.sleep(1)
         else:
+            print("Cookie find")
+            driver, options = _open_browser(True)
+            driver.get(self.wmrfast_url)
             for cookie in pickle.load(open("cookies", "rb")):
                 driver.add_cookie(cookie)
+            driver.get(self.wmrfast_url)
 
-        driver.get(self.wmrfast_url)
+        while not ("https://wmrfast.com/members.php" in driver.current_url):
+                time.sleep(1)
         pickle.dump(driver.get_cookies(), open("cookies", "wb"))
-
+        print("End log in")
         return driver, options
