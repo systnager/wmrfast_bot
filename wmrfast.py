@@ -6,6 +6,7 @@ import datetime
 import pickle
 import time
 
+from res.string import strings
 
 def _open_browser(is_headless=False):
     options = webdriver.FirefoxOptions()
@@ -19,9 +20,10 @@ def _open_browser(is_headless=False):
 
 
 class WMRFast:
-    def __init__(self):
+    def __init__(self, settings):
         self.wmrfast_url = "https://wmrfast.com"
         self.total_earned_money = 0
+        self.settings = settings
 
 
     def start_view_website(self):
@@ -46,10 +48,9 @@ class WMRFast:
                 driver.switch_to.window(driver.window_handles[0])
                 time.sleep(3)
                 self.total_earned_money += earned_money
-                print(f"{datetime.datetime.now()} earned for session: {earned_money}, total: {self.total_earned_money} in view site")
+                print(f"{datetime.datetime.now()} {strings['earned'][self.settings.get_settings()['language']]}: {earned_money}, {strings['total'][self.settings.get_settings()['language']]}: {self.total_earned_money}")
         except Exception as e:
-            print(f"\n\n\n{datetime.datetime.now()}\nWARNING, {e}\n\n\n\n")
-            print(f"{datetime.datetime.now()} end view site")
+            print(f"{datetime.datetime.now()} {e}")
         finally:
             driver.quit()
 
@@ -82,16 +83,17 @@ class WMRFast:
                 driver.switch_to.window(driver.window_handles[0])
 
                 self.total_earned_money += earned_money
-                print(f"{datetime.datetime.now()} earned for session: {earned_money}, total: {self.total_earned_money} in youtube video")
+                print(
+                    f"{datetime.datetime.now()} {strings['earned'][self.settings.get_settings()['language']]}: {earned_money}, {strings['total'][self.settings.get_settings()['language']]}: {self.total_earned_money}")
         except Exception as e:
-            print(f"\n\n\n{datetime.datetime.now()}\nWARNING, {e}\n\n\n\n")
-            print(f"{datetime.datetime.now()} end watch youtube")
+            print(f"{datetime.datetime.now()} {e}")
         finally:
             driver.quit()
 
     def _log_in_on_wmrfast(self):
+        print(f"{datetime.datetime.now()} {strings['start_log_in'][self.settings.get_settings()['language']]}")
         if not exists("cookies"):
-            print("Cookie not found")
+            print(f"{datetime.datetime.now()} {strings['cookies_not_find'][self.settings.get_settings()['language']]}")
             driver, options = _open_browser()
             driver.get(self.wmrfast_url)
             file = open("authentication_data.txt", "r")
@@ -109,7 +111,7 @@ class WMRFast:
 
             del auth_data, login, password
         else:
-            print("Cookie find")
+            print(f"{datetime.datetime.now()} {strings['cookies_find'][self.settings.get_settings()['language']]}")
             driver, options = _open_browser(True)
             driver.get(self.wmrfast_url)
             for cookie in pickle.load(open("cookies", "rb")):
@@ -119,5 +121,5 @@ class WMRFast:
         while not ("https://wmrfast.com/members.php" in driver.current_url):
                 time.sleep(1)
         pickle.dump(driver.get_cookies(), open("cookies", "wb"))
-        print("End log in")
+        print(f"{datetime.datetime.now()} {strings['finish_log_in'][self.settings.get_settings()['language']]}")
         return driver, options
