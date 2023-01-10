@@ -1,5 +1,6 @@
 from selenium.webdriver.common.by import By
 from selenium import webdriver
+import random
 
 from os.path import exists
 import datetime
@@ -26,9 +27,8 @@ class WMRFast:
         self.settings = settings
 
 
-    def start_view_website(self):
+    def start_view_website(self, driver, options):
         try:
-            driver, options = self._log_in_on_wmrfast()
             driver.get("https://wmrfast.com/serfingnew.php")
             while driver.current_url != "https://wmrfast.com/serfingnew.php":
                 time.sleep(0.1)
@@ -43,21 +43,20 @@ class WMRFast:
                 a.click()
                 driver.switch_to.window(driver.window_handles[1])
 
-                time.sleep(time_sleep + 3)
+                time.sleep(time_sleep + random.randint(3, 5))
                 driver.close()
                 driver.switch_to.window(driver.window_handles[0])
-                time.sleep(3)
+                time.sleep(random.randint(3, 7))
                 self.total_earned_money += earned_money
                 print(f"{datetime.datetime.now()} {strings['earned'][self.settings.get_settings()['language']]}: {earned_money}, {strings['total'][self.settings.get_settings()['language']]}: {self.total_earned_money}")
         except Exception as e:
             print(f"{datetime.datetime.now()} {e}")
         finally:
-            driver.quit()
+            return driver, options
 
 
-    def start_watch_youtube(self):
+    def start_watch_youtube(self, driver, options):
         try:
-            driver, options = self._log_in_on_wmrfast()
             driver.get("https://wmrfast.com/serfing_ytn.php")
             while driver.current_url != "https://wmrfast.com/serfing_ytn.php":
                 time.sleep(0.1)
@@ -69,6 +68,7 @@ class WMRFast:
                 price_span, time_span = i.find_elements(By.CLASS_NAME, "clickprice")
                 earned_money = float(price_span.get_attribute('innerHTML'))
                 time_sleep = float(time_span.get_attribute('innerHTML').split()[0])
+                time.sleep(random.randint(1, 4))
                 a.click()
                 while len(driver.window_handles) < 2:
                     time.sleep(0.1)
@@ -88,7 +88,7 @@ class WMRFast:
         except Exception as e:
             print(f"{datetime.datetime.now()} {e}")
         finally:
-            driver.quit()
+            return driver, options
 
     def _log_in_on_wmrfast(self):
         print(f"{datetime.datetime.now()} {strings['start_log_in'][self.settings.get_settings()['language']]}")
