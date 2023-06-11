@@ -10,12 +10,12 @@ from wmrfast import WMRFast
 def main():
     settings = Settings()
     wmr_fast = WMRFast(settings)
-    driver, options = wmr_fast.log_in()
+    driver = wmr_fast.log_in()
     while True:
         try:
-            driver, options = wmr_fast.start_watch_youtube(driver, options)
+            driver, = wmr_fast.start_watch_youtube(driver)
         except Exception as e:
-            print(f"{bcolors.WARNING}{datetime.datetime.now()} ERROR. PLEASE, CHECK BROWSER\n{e}{bcolors.ENDC}")
+            print(f"{bcolors.WARNING}{datetime.datetime.now()}{e}{bcolors.ENDC}")
             print(f'{datetime.datetime.now()} sleep 60 seconds')
             time.sleep(60)
             continue
@@ -25,9 +25,9 @@ def main():
         time.sleep(time_sleep)
 
         try:
-            driver, options = wmr_fast.start_view_website(driver, options)
+            driver = wmr_fast.start_view_website(driver)
         except Exception as e:
-            print(f"{bcolors.WARNING}{datetime.datetime.now()} ERROR. PLEASE, CHECK BROWSER\n{e}{bcolors.ENDC}")
+            print(f"{bcolors.WARNING}{datetime.datetime.now()}{e}{bcolors.ENDC}")
             print(f'{datetime.datetime.now()} sleep 60 seconds')
             time.sleep(60)
             continue

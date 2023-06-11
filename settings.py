@@ -1,5 +1,4 @@
 import json
-from res.string import strings
 
 
 class Settings:

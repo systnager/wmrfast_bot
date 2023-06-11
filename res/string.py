@@ -1,43 +1,55 @@
 strings = {
-    "start_watch_youtube": {
-        "eng": "Watch YouTube videos",
-        "ukr": "Почати перегляд YouTube відео"
+    "watch_videos": {
+        "eng": "watch videos",
+        "ukr": "перегляд відео"
     },
-    "start_watch_youtube_forever": {
-        "eng": "Watch YouTube videos forever",
-        "ukr": "Почати перегляд YouTube відео вічно"
+    "view_web": {
+        "eng": "view web",
+        "ukr": "перегляд сайтів"
+    },
+    "wait_loaded_page": {
+        "eng": "wait loaded page",
+        "ukr": "очікування завантаження сторінки"
+    },
+    "nothing_watch_or_view": {
+        "eng": "nothing watch or view",
+        "ukr": "нічого переглядати"
+    },
+    "press_enter_to_continue": {
+        "eng": "press enter to continue",
+        "ukr": "натисніть ввід, щоб продовжити"
     },
     "log_in": {
-        "eng": "Log in",
-        "ukr": "Увійти"
+        "eng": "log in",
+        "ukr": "увійти"
     },
     "settings": {
-        "eng": "Settings",
-        "ukr": "Налаштування"
+        "eng": "settings",
+        "ukr": "налаштування"
     },
     "exit": {
-        "eng": "Exit",
-        "ukr": "Вихід"
+        "eng": "exit",
+        "ukr": "вихід"
     },
     "save": {
-        "eng": "Save",
-        "ukr": "Зберегти"
+        "eng": "save",
+        "ukr": "зберегти"
     },
     "cookies_find": {
-        "eng": "Cookies find",
-        "ukr": "Кукі знайдено"
+        "eng": "cookies find",
+        "ukr": "кукі знайдено"
     },
     "cookies_not_find": {
-        "eng": "Cookies not find",
-        "ukr": "Кукі не знайдено"
+        "eng": "cookies not find",
+        "ukr": "кукі не знайдено"
     },
     "start_log_in": {
-        "eng": "Start log in",
-        "ukr": "Розпочинається авторизація"
+        "eng": "start log in",
+        "ukr": "розпочинається авторизація"
     },
     "finish_log_in": {
-        "eng": "Finish log in",
-        "ukr": "Авторизація завершена"
+        "eng": "finish log in",
+        "ukr": "авторизація завершена"
     },
     "earned": {
         "eng": "earned",
