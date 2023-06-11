@@ -25,7 +25,7 @@ def _open_browser(is_headless=False):
 
 class WMRFast:
     def __init__(self, settings):
-        self.wmrfast_url = "https://wmrfast.com"
+        self.wmr_fast_url = "https://wmrfast.com"
         self.total_earned_money = 0
         self.settings = settings
 
@@ -150,7 +150,7 @@ class WMRFast:
         print(f"{datetime.datetime.now()} Open browser")
         driver, options = _open_browser()
         print(f"{datetime.datetime.now()} get url")
-        driver.get(self.wmrfast_url)
+        driver.get(self.wmr_fast_url)
 
         print(f"{datetime.datetime.now()} get login and password from file")
         file = open("authentication_data.txt", "r")
@@ -164,7 +164,7 @@ class WMRFast:
             print(f"{datetime.datetime.now()} login and password write incorrect")
             login, password = "", ""
 
-        while not (self.wmrfast_url in driver.current_url):
+        while not (self.wmr_fast_url in driver.current_url):
             print(f"{datetime.datetime.now()} wait while site loading")
             time.sleep(1)
 
