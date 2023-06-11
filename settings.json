@@ -1,4 +1,5 @@
 {
-  "language": "eng",
-  "support_languages": ["eng", "ukr"]
+  "language": "ukr",
+  "support_languages": ["eng", "ukr"],
+  "browser_is_headless": true
 }
