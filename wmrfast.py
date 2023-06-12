@@ -31,7 +31,7 @@ class WMRFast:
                   f"{strings['nothing_watch_or_view'][self.lan]}. " +
                   f"{strings['press_enter_to_continue'][self.lan]}"
                   )
-            return driver,
+            return driver
         for i in website_list:
             try:
                 a = i.find_elements(By.CLASS_NAME, "serf_hash")[0]
@@ -133,11 +133,8 @@ class WMRFast:
 
     def log_in(self):
         print(f"{datetime.datetime.now()} {strings['start_log_in'][self.lan]}")
-        if exists("cookies"):
-
-            driver = Browser(self.settings['browser_is_headless']).open_browser()
-        else:
-            driver = Browser(False).open_browser()
+        driver = Browser(self.settings['browser_is_headless']).open_browser() \
+            if exists("cookies") else Browser(False).open_browser()
 
         driver.get(self.wmr_fast_url)
         while not (self.wmr_fast_url in driver.current_url):
