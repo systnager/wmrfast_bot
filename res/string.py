@@ -58,5 +58,9 @@ strings = {
     "total": {
         "eng": "total",
         "ukr": "всього"
-    }
+    },
+    "run_loop": {
+        "eng": "run loop",
+        "ukr": "запустити циклічно"
+    },
 }
