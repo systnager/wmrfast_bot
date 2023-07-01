@@ -8,7 +8,6 @@ class Browser:
         self.options.headless = is_headless
         self.options.set_preference('intl.accept_languages', 'ru')
         self.options.set_preference("dom.webdriver.enabled", False)
-        self.options.set_preference("dom.webdriver.enabled", False)
         self.options.set_preference('useAutomationExtension', False)
 
     def open_browser(self):
