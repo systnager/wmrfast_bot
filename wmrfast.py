@@ -2,13 +2,19 @@ from selenium.webdriver.common.by import By
 
 from os.path import exists
 import datetime
-import random
 import pickle
 import time
 
 from res.string import strings
 from bcolors import bcolors
 from browser import Browser
+
+
+def _is_captcha_available(driver):
+    if len(driver.find_elements(By.ID, 'h-captcha')) != 0:
+        return True
+    else:
+        return False
 
 
 class WMRFast:
@@ -23,21 +29,21 @@ class WMRFast:
               f"{strings['view_web'][self.lan]}"
               )
         driver.get("https://wmrfast.com/serfingnew.php")
-        while driver.current_url != "https://wmrfast.com/serfingnew.php":
-            time.sleep(1)
+
         website_list = driver.find_elements(By.CLASS_NAME, "no_active_link")
         if len(website_list) == 0:
-            input(f"{datetime.datetime.now()} " +
-                  f"{strings['nothing_watch_or_view'][self.lan]}. " +
-                  f"{strings['press_enter_to_continue'][self.lan]}"
-                  )
+            print(f"{datetime.datetime.now()} {strings['nothing_watch_or_view'][self.lan]}")
+            time.sleep(1800)
             return driver
+
+        if _is_captcha_available(driver):
+            input(f'\n\n\n{bcolors.WARNING}WARNING, COMPLETE THE CAPTCHA AND PRESS ENTER{bcolors.ENDC}\n\n\n')
         for i in website_list:
             try:
-                a = i.find_elements(By.CLASS_NAME, "serf_hash")[0]
+                a = i.find_element(By.CLASS_NAME, "serf_hash")
                 price_span, time_span = i.find_elements(By.CLASS_NAME, "clickprice")
                 earned_money = float(price_span.get_attribute('innerHTML'))
-                time_sleep = int(time_span.get_attribute('innerHTML').split()[0]) + random.randint(3, 5)
+                time_sleep = int(time_span.get_attribute('innerHTML').split()[0]) + 3
                 a.click()
             except Exception as e:
                 print(f"{bcolors.WARNING}{e}{bcolors.ENDC}")
@@ -61,13 +67,12 @@ class WMRFast:
                 f"{strings['earned'][self.lan]}: " +
                 f"{round(earned_money, 5)}, {strings['total'][self.lan]}: " +
                 f"{round(self.total_earned_money, 5)}{bcolors.ENDC}"
-                )
+            )
             for handle in driver.window_handles[1:]:
                 driver.switch_to.window(handle)
                 driver.close()
 
             driver.switch_to.window(driver.window_handles[0])
-            time.sleep(3)
 
         return driver
 
@@ -75,22 +80,22 @@ class WMRFast:
         print(f"{datetime.datetime.now()} " +
               f"{strings['watch_videos'][self.lan]}"
               )
+
         driver.get("https://wmrfast.com/serfing_ytn.php")
-        while driver.current_url != "https://wmrfast.com/serfing_ytn.php":
-            time.sleep(1)
         video_list = driver.find_elements(By.CLASS_NAME, "sforms")
         if len(video_list) == 0:
-            input(f"{datetime.datetime.now()} " +
-                  f"{strings['nothing_watch_or_view'][self.lan]}. " +
-                  f"{strings['press_enter_to_continue'][self.lan]}"
-                  )
-            return driver,
+            print(f"{datetime.datetime.now()} {strings['nothing_watch_or_view'][self.lan]}")
+            time.sleep(1800)
+            return driver
+
+        if _is_captcha_available(driver):
+            input(f'\n\n\n{bcolors.WARNING}WARNING, COMPLETE THE CAPTCHA AND PRESS ENTER{bcolors.ENDC}\n\n\n')
         for i in video_list:
             try:
                 a = i.find_elements(By.CLASS_NAME, "serf_hash")[0]
                 price_span, time_span = i.find_elements(By.CLASS_NAME, "clickprice")
                 earned_money = float(price_span.get_attribute('innerHTML'))
-                time_sleep = int(time_span.get_attribute('innerHTML').split()[0]) + random.randint(1, 3)
+                time_sleep = int(time_span.get_attribute('innerHTML').split()[0])
                 a.click()
             except Exception as e:
                 print(f"{bcolors.WARNING}{datetime.datetime.now()}{e}{bcolors.ENDC}")
@@ -113,7 +118,7 @@ class WMRFast:
             except Exception as e:
                 print(f"{bcolors.WARNING}{datetime.datetime.now()}{e}{bcolors.ENDC}")
                 continue
-            time.sleep(random.randint(1, 3))
+            time.sleep(1.5)
 
             self.total_earned_money += earned_money
             print(
@@ -127,18 +132,15 @@ class WMRFast:
                 driver.close()
 
             driver.switch_to.window(driver.window_handles[0])
-            time.sleep(1)
 
         return driver
 
     def log_in(self):
         print(f"{datetime.datetime.now()} {strings['start_log_in'][self.lan]}")
-        driver = Browser(self.settings['browser_is_headless']).open_browser() \
-            if exists("cookies") else Browser(False).open_browser()
+        driver = Browser(self.settings['browser_is_headless']
+                         ).open_browser() if exists("cookies") else Browser(False).open_browser()
 
         driver.get(self.wmr_fast_url)
-        while not (self.wmr_fast_url in driver.current_url):
-            time.sleep(1)
 
         if exists("cookies"):
             print(f"{datetime.datetime.now()} {strings['cookies_find'][self.lan]}")
@@ -160,9 +162,6 @@ class WMRFast:
             driver.find_element(By.ID, "vhusername").send_keys(login)
             driver.find_element(By.ID, "vhpass").send_keys(password)
             del auth_data, login, password
-
-        while not ("wmrfast.com/members.php" in driver.current_url):
-            time.sleep(1)
 
         pickle.dump(driver.get_cookies(), open("cookies", "wb"))
         print(f"{datetime.datetime.now()} {strings['finish_log_in'][self.lan]}")
