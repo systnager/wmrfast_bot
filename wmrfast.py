@@ -44,7 +44,10 @@ class WMRFast:
                 price_span, time_span = i.find_elements(By.CLASS_NAME, "clickprice")
                 earned_money = float(price_span.get_attribute('innerHTML'))
                 time_sleep = int(time_span.get_attribute('innerHTML').split()[0]) + 3
-                a.click()
+                if 't.me' in a.get_attribute('href'):
+                    continue
+                else:
+                    a.click()
             except Exception as e:
                 print(f"{bcolors.WARNING}{e}{bcolors.ENDC}")
                 continue
