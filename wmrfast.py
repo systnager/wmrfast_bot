@@ -80,7 +80,7 @@ class WMRFast:
             is_tasks_available = False
 
         return {
-        'is_tasks_available': is_tasks_available,
+            'is_tasks_available': is_tasks_available,
         }
 
     def watch_videos(self, driver):
@@ -144,7 +144,7 @@ class WMRFast:
             is_tasks_available = False
 
         return {
-        'is_tasks_available': is_tasks_available,
+            'is_tasks_available': is_tasks_available,
         }
 
     def log_in(self):
@@ -176,7 +176,7 @@ class WMRFast:
             del auth_data, login, password
             input(f"{datetime.datetime.now()} Press ENTER after log in")
 
-            pickle.dump(driver.get_cookies(), open("cookies", "wb"))
+            # pickle.dump(driver.get_cookies(), open("cookies", "wb"))
         print(f"{datetime.datetime.now()} {strings['finish_log_in'][self.lan]}")
 
         return driver
