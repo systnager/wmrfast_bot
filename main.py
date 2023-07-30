@@ -1,11 +1,11 @@
 import datetime
-import random
-import pickle
 import time
 
+from selenium.common.exceptions import TimeoutException, WebDriverException
+
+from res.string import strings
 from settings import Settings
 from wmrfast import WMRFast
-from res.string import strings
 
 
 def main():
@@ -35,7 +35,10 @@ def main():
                 quit()
             else:
                 continue
-            
+        except (TimeoutException, WebDriverException):
+            print(f"{datetime.datetime.now()} Error with network. Sleep 1 minute")
+            time.sleep(60)
+            continue
 
 
 if __name__ == "__main__":
