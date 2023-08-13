@@ -1,18 +1,19 @@
+import threading
 import datetime
 import time
 
-from selenium.common.exceptions import TimeoutException, WebDriverException
+from selenium.common.exceptions import TimeoutException, NoSuchWindowException
 
 from res.string import strings
 from settings import Settings
 from wmrfast import WMRFast
 
 
-def main():
+def main(exit_event):
     _settings = Settings()
     settings = _settings.get_settings()
     lan = settings['language']
-    wmr_fast = WMRFast(_settings)
+    wmr_fast = WMRFast(_settings, exit_event)
     driver = wmr_fast.log_in()
     print(f'{datetime.datetime.now()} sleep {5} seconds')
     time.sleep(5)
@@ -30,16 +31,29 @@ def main():
                 is_video_tasks_available = True
                 is_website_tasks_available = True
                 time.sleep(3600)
-        except KeyboardInterrupt:
-            if input('PRESS ENTER TO CONTINUE OR ENTER STOP TO CLOSE').lower() == 'stop':
-                quit()
-            else:
-                continue
-        except (TimeoutException, WebDriverException):
-            print(f"{datetime.datetime.now()} Error with network. Sleep 1 minute")
+        except (TimeoutException, NoSuchWindowException) as e:
+            print(f"{datetime.datetime.now()} Sleep 1 minute\n{e}\n")
             time.sleep(60)
             continue
 
 
 if __name__ == "__main__":
-    main()
+    exit_event = threading.Event()
+
+    thread = threading.Thread(target=main, args=(exit_event,))
+    thread.start()
+    try:
+        while True:
+            command = input("Enter 'pause' to pause or 'resume' to resume the bot\n")
+            if command == "pause":
+                exit_event.set()
+                print("Bot paused.")
+            elif command == "resume":
+                exit_event.clear()
+                print("Bot resumed.")
+            else:
+                print("Invalid command. Enter 'pause' to pause or 'resume' to resume.")
+    except KeyboardInterrupt:
+        exit_event.set()
+
+    thread.join()

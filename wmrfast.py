@@ -18,9 +18,10 @@ def _is_captcha_available(driver):
 
 
 class WMRFast:
-    def __init__(self, settings):
+    def __init__(self, settings, exit_event):
         self.wmr_fast_url = "https://wmrfast.com"
         self.total_earned_money = 0
+        self.exit_event = exit_event
         self.settings = settings.get_settings()
         self.lan = self.settings['language']
 
@@ -31,13 +32,16 @@ class WMRFast:
         driver.get("https://wmrfast.com/serfingnew.php")
         print(f'{datetime.datetime.now()} sleep {5} seconds')
         time.sleep(5)
-        if _is_captcha_available(driver):
-            input(f'\n\n\n{bcolors.WARNING}WARNING, COMPLETE THE CAPTCHA AND PRESS ENTER{bcolors.ENDC}\n\n\n')
+        while _is_captcha_available(driver):
+            print(f'\n\n\n{bcolors.WARNING}WARNING, COMPLETE THE CAPTCHA{bcolors.ENDC}\n\n\n')
+            time.sleep(1)
 
         website_list = driver.find_elements(By.CLASS_NAME, "no_active_link")
         is_tasks_available = True
         if len(website_list) > 0:
             for i in website_list:
+                while self.exit_event.is_set():
+                    time.sleep(1)
                 try:
                     a = i.find_element(By.CLASS_NAME, "serf_hash")
                     price_span, time_span = i.find_elements(By.CLASS_NAME, "clickprice")
@@ -89,14 +93,17 @@ class WMRFast:
               )
 
         driver.get("https://wmrfast.com/serfing_ytn.php")
-        if _is_captcha_available(driver):
-            input(f'\n\n\n{bcolors.WARNING}WARNING, COMPLETE THE CAPTCHA AND PRESS ENTER{bcolors.ENDC}\n\n\n')
+        while _is_captcha_available(driver):
+            print(f'\n\n\n{bcolors.WARNING}WARNING, COMPLETE THE CAPTCHA{bcolors.ENDC}\n\n\n')
+            time.sleep(1)
         print(f'{datetime.datetime.now()} sleep {5} seconds')
         time.sleep(5)
         video_list = driver.find_elements(By.CLASS_NAME, "sforms")
         is_tasks_available = True
         if len(video_list) > 0:
             for i in video_list:
+                while self.exit_event.is_set():
+                    time.sleep(1)
                 try:
                     a = i.find_elements(By.CLASS_NAME, "serf_hash")[0]
                     price_span, time_span = i.find_elements(By.CLASS_NAME, "clickprice")
@@ -174,9 +181,10 @@ class WMRFast:
             driver.find_element(By.ID, "vhusername").send_keys(login)
             driver.find_element(By.ID, "vhpass").send_keys(password)
             del auth_data, login, password
-            input(f"{datetime.datetime.now()} Press ENTER after log in")
+        while not ('member' in driver.current_url):
+            time.sleep(1)
 
-            # pickle.dump(driver.get_cookies(), open("cookies", "wb"))
+        # pickle.dump(driver.get_cookies(), open("cookies", "wb"))
         print(f"{datetime.datetime.now()} {strings['finish_log_in'][self.lan]}")
 
         return driver
