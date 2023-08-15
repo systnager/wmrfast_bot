@@ -168,8 +168,9 @@ class WMRFast:
             auth_data = file.read().split(":")
             file.close()
 
-            if len(auth_data) == 2:
-                login, password = auth_data
+            if len(auth_data) > 1:
+                login = auth_data[0]
+                password = auth_data[1]
             else:
                 login, password = "", ""
 
