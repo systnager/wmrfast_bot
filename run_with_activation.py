@@ -9,15 +9,16 @@ if len(userdata) < 2:
     quit()
 
 
-print('userdata', userdata)
 username = userdata[0]
-print(username)
-key = userdata[:-1]
+key = userdata[-1]
 file.close()
 user_id = Activation.get_user_id(username)
 
 while not Activation.is_key_valid(key, user_id):
-    print(f'YOUR USER ID: {user_id}')
+    file = open("YOUR USER ID.txt", 'w')
+    file.write(user_id)
+    file.close()
+    print(f'YOUR USER ID: {user_id}\nITS WAS WRITTEN IN "YOUR USER ID.txt" FILE IN BOT FOLDER')
     key = input('ENTER VALID PRODUCT KEY: ')
 
 user_date = datetime.strptime(Activation.get_expire_data_from_key(key), "%d%m%Y")
@@ -35,4 +36,3 @@ else:
 file.close()
 
 main()
-
