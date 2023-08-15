@@ -9,8 +9,8 @@ def is_numeric(input_string):
         return False
 
 
-user_id = input('enter user id: ')
-date_expire = input('enter date expire: ')
+user_id = input('enter user id: ').replace(' ', '')
+date_expire = input('enter date expire: ').replace(' ', '')
 if len(date_expire) != 8 or is_numeric(date_expire) or len(user_id) != 64:
     print('incorrect date')
 else:
