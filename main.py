@@ -9,13 +9,17 @@ from settings import Settings
 from wmrfast import WMRFast
 
 
-def main(exit_event):
-    _settings = Settings()
-    settings = _settings.get_settings()
-    lan = settings['language']
-    wmr_fast = WMRFast(_settings, exit_event)
+_settings = Settings()
+settings = _settings.get_settings()
+lan = settings['language']
+
+
+def start_config(_exit_event):
+    global _settings
+    global lan
+    wmr_fast = WMRFast(_settings, _exit_event)
     driver = wmr_fast.log_in()
-    print(f'{datetime.datetime.now()} sleep {5} seconds')
+    print(f'{datetime.datetime.now()} {strings["sleep"][lan]} 5 {strings["seconds"][lan]}')
     time.sleep(5)
     is_video_tasks_available = True
     is_website_tasks_available = True
@@ -27,33 +31,37 @@ def main(exit_event):
                 if is_website_tasks_available:
                     is_website_tasks_available = wmr_fast.view_websites(driver)['is_tasks_available']
             else:
-                print(f"{datetime.datetime.now()} {strings['nothing_watch_or_view'][lan]}")
+                print(f'{datetime.datetime.now()} {strings["tasks_is_not_available"][lan]}')
                 is_video_tasks_available = True
                 is_website_tasks_available = True
                 time.sleep(3600)
-        except (TimeoutException, NoSuchWindowException) as e:
-            print(f"{datetime.datetime.now()} Sleep 1 minute\n{e}\n")
+        except (TimeoutException, NoSuchWindowException):
+            print(f'{datetime.datetime.now()} {strings["sleep"][lan]} 60 {strings["seconds"][lan]}')
             time.sleep(60)
             continue
 
 
-if __name__ == "__main__":
+def main():
     exit_event = threading.Event()
 
-    thread = threading.Thread(target=main, args=(exit_event,))
+    thread = threading.Thread(target=start_config, args=(exit_event,))
     thread.start()
     try:
         while True:
-            command = input("Enter 'pause' to pause or 'resume' to resume the bot\n")
+            command = input(f'\n{strings["command_list"][lan]}\n')
             if command == "pause":
                 exit_event.set()
-                print("Bot paused.")
+                print(f'{datetime.datetime.now()} {strings["bot_paused"][lan]}')
             elif command == "resume":
                 exit_event.clear()
-                print("Bot resumed.")
+                print(f'{datetime.datetime.now()} {strings["bot_resume"][lan]}')
             else:
-                print("Invalid command. Enter 'pause' to pause or 'resume' to resume.")
+                print(f'{strings["invalid_command"][lan]} {strings["command_list"][lan]}\n')
     except KeyboardInterrupt:
         exit_event.set()
 
     thread.join()
+
+
+if __name__ == "__main__":
+    main()

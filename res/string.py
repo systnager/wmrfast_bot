@@ -63,4 +63,48 @@ strings = {
         "eng": "run loop",
         "ukr": "запустити циклічно"
     },
+    "sleep": {
+        "eng": "sleep",
+        "ukr": "сон"
+    },
+    "seconds": {
+        "eng": "seconds",
+        "ukr": "секунд"
+    },
+    "tasks_is_not_available": {
+        "eng": "tasks is not available",
+        "ukr": "завдання недоступні"
+    },
+    "command_list": {
+        "eng": "enter 'pause' to pause or 'resume' to resume the bot",
+        "ukr": "уведіть 'pause' для призупинки бота або 'resume' для продовження роботи бота"
+    },
+    "bot_paused": {
+        "eng": "bot paused",
+        "ukr": "бота призупинено"
+    },
+    "bot_resume": {
+        "eng": "bot resume",
+        "ukr": "роботу бота продовжено"
+    },
+    "invalid_command": {
+        "eng": "invalid command",
+        "ukr": "некорентна команда"
+    },
+    "complete_captcha": {
+        "eng": "complete captcha",
+        "ukr": "пройдіть капчу"
+    },
+    "run_loop": {
+        "eng": "run loop",
+        "ukr": "запустити циклічно"
+    },
+    "run_loop": {
+        "eng": "run loop",
+        "ukr": "запустити циклічно"
+    },
+    "run_loop": {
+        "eng": "run loop",
+        "ukr": "запустити циклічно"
+    },
 }

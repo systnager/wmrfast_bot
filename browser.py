@@ -9,7 +9,6 @@ class Browser:
         self.options.set_preference('intl.accept_languages', 'ru')
         self.options.set_preference("dom.webdriver.enabled", False)
         self.options.set_preference('useAutomationExtension', False)
-
     def open_browser(self):
         driver = webdriver.Firefox(options=self.options)
         self.driver = driver

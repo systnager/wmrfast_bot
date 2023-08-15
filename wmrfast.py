@@ -1,4 +1,5 @@
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import ElementClickInterceptedException, JavascriptException, ElementNotInteractableException
 
 from os.path import exists
 import datetime
@@ -30,10 +31,8 @@ class WMRFast:
               f"{strings['view_web'][self.lan]}"
               )
         driver.get("https://wmrfast.com/serfingnew.php")
-        print(f'{datetime.datetime.now()} sleep {5} seconds')
-        time.sleep(5)
         while _is_captcha_available(driver):
-            print(f'\n\n\n{bcolors.WARNING}WARNING, COMPLETE THE CAPTCHA{bcolors.ENDC}\n\n\n')
+            print(f'{bcolors.WARNING}{strings["complete_captcha"][self.lan]}{bcolors.ENDC}')
             time.sleep(1)
 
         website_list = driver.find_elements(By.CLASS_NAME, "no_active_link")
@@ -51,8 +50,8 @@ class WMRFast:
                         continue
                     else:
                         a.click()
-                except Exception as e:
-                    print(f"{bcolors.WARNING}{e}{bcolors.ENDC}")
+                except (ElementClickInterceptedException, ElementNotInteractableException):
+                    time.sleep(1)
                     continue
 
                 for j in range(5):
@@ -94,10 +93,8 @@ class WMRFast:
 
         driver.get("https://wmrfast.com/serfing_ytn.php")
         while _is_captcha_available(driver):
-            print(f'\n\n\n{bcolors.WARNING}WARNING, COMPLETE THE CAPTCHA{bcolors.ENDC}\n\n\n')
+            print(f'{bcolors.WARNING}{strings["complete_captcha"][self.lan]}{bcolors.ENDC}')
             time.sleep(1)
-        print(f'{datetime.datetime.now()} sleep {5} seconds')
-        time.sleep(5)
         video_list = driver.find_elements(By.CLASS_NAME, "sforms")
         is_tasks_available = True
         if len(video_list) > 0:
@@ -110,8 +107,8 @@ class WMRFast:
                     earned_money = float(price_span.get_attribute('innerHTML'))
                     time_sleep = int(time_span.get_attribute('innerHTML').split()[0])
                     a.click()
-                except Exception as e:
-                    print(f"{bcolors.WARNING}{datetime.datetime.now()}{e}{bcolors.ENDC}")
+                except (ElementClickInterceptedException, ElementNotInteractableException):
+                    time.sleep(1)
                     continue
 
                 for j in range(5):
@@ -130,23 +127,22 @@ class WMRFast:
                 try:
                     driver.execute_script("check()")
                     time.sleep(3)
-                except Exception as e:
-                    print(f"{bcolors.WARNING}{datetime.datetime.now()}{e}{bcolors.ENDC}")
-                    continue
-
-                self.total_earned_money += earned_money
-                print(
-                    f"{bcolors.OKGREEN}{datetime.datetime.now()} " +
-                    f"{strings['earned'][self.lan]}: " +
-                    f"{round(earned_money, 5)}, {strings['total'][self.lan]}: " +
-                    f"{round(self.total_earned_money, 5)}{bcolors.ENDC}"
-                )
+                except JavascriptException:
+                    time.sleep(1)
+                else:
+                    self.total_earned_money += earned_money
+                    print(
+                        f"{bcolors.OKGREEN}{datetime.datetime.now()} " +
+                        f"{strings['earned'][self.lan]}: " +
+                        f"{round(earned_money, 5)}, {strings['total'][self.lan]}: " +
+                        f"{round(self.total_earned_money, 5)}{bcolors.ENDC}"
+                    )
                 for handle in driver.window_handles[1:]:
                     driver.switch_to.window(handle)
                     driver.close()
 
                 driver.switch_to.window(driver.window_handles[0])
-                time.sleep(1.5)
+                time.sleep(1)
         else:
             is_tasks_available = False
 
@@ -184,7 +180,7 @@ class WMRFast:
         while not ('member' in driver.current_url):
             time.sleep(1)
 
-        # pickle.dump(driver.get_cookies(), open("cookies", "wb"))
+        pickle.dump(driver.get_cookies(), open("cookies", "wb"))
         print(f"{datetime.datetime.now()} {strings['finish_log_in'][self.lan]}")
 
         return driver
