@@ -95,16 +95,20 @@ strings = {
         "eng": "complete captcha",
         "ukr": "пройдіть капчу"
     },
-    "run_loop": {
-        "eng": "run loop",
-        "ukr": "запустити циклічно"
+    "username_not_exist_warning": {
+        "eng": "WARNING, ENTER YOUR USERNAME IN authentication_data.txt FILE",
+        "ukr": "УВАГА, ВВЕДІТЬ ВАШ USERNAME У authentication_data.txt FILE"
     },
-    "run_loop": {
-        "eng": "run loop",
-        "ukr": "запустити циклічно"
+    "key_expire_warning": {
+        "eng": "KEY IS EXPIRE. BUY NEW IN TELEGRAM: @systnager",
+        "ukr": "КЛЮЧ ВИЧЕРПАНИЙ. КУПІТЬ НОВИЙ У ТЕЛЕГРАМ: @systnager"
     },
-    "run_loop": {
-        "eng": "run loop",
-        "ukr": "запустити циклічно"
+    "user_id_was_writen_warning": {
+        "eng": "YOUR USER ID WAS WRITTEN IN \"YOUR USER ID.txt\" FILE IN BOT FOLDER",
+        "ukr": "ВАШ USER ID БУВ ЗАПИСАНИЙ У \"YOUR USER ID.txt\" ФАЙЛ У ПАПЦІ БОТА"
+    },
+    "write_key_in_file_warning": {
+        "eng": "PRESS ENTER AFTER ENTER VALID PRODUCT KEY IN \"key.txt\"",
+        "ukr": "НАТИСНІТЬ ВВІД ПІСЛЯ ТОГО, ЯК ВВЕЛИ ВАЛІДНИЙ КЛЮЧ У \"key.txt\""
     },
 }
